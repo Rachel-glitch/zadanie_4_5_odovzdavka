@@ -202,13 +202,22 @@ function createHtml4opinions(targetElm){
 // }
 
 function str(targetElm, current,totalCount, artcs){
+    // let text = artcs[0].content;
+    // artcs.forEach((article,index) => {
+    //     artcs[index].content = article.content;
+    //     text = {content: text};
+    //     console.log(article.content);
+    // })
+
+        //console.log(article);
 
     current=parseInt(current);
     totalCount=parseInt(totalCount);
     const data4rendering={
         currPage:current,
         pageCount:totalCount,
-        articles: artcs
+        articles: artcs,
+        //content: text
     };
 
     if(current>1){
@@ -229,7 +238,6 @@ function fetchAndDisplayArticles(targetElm, offsetFromHash, totalCountFromHash){
 
     const offset=Number(offsetFromHash);
     const totalCount=Number(totalCountFromHash);
-    //const articlesPerPage=10;
     let urlQuery = "";
 
 
@@ -250,14 +258,17 @@ function fetchAndDisplayArticles(targetElm, offsetFromHash, totalCountFromHash){
             }
         })
         .then(responseJSON => {
+            // articleList = responseJSON.articles;
+            // responseJSON.articles.forEach((article, index) => {
+            //     articleList[index].content = article.content;
+            // }
             addArtDetailLink2ResponseJson(responseJSON);
-            // document.getElementById(targetElm).innerHTML =
-            //     Mustache.render(
-            //         document.getElementById("template-articles").innerHTML,
-            //         responseJSON
-            //     );
+
             str(targetElm, offsetFromHash-1,totalCount, responseJSON.articles);
         })
+        .then(
+
+        )
         .catch (error => { ////here we process all the failed promises
             const errMsgObj = {errMessage:error};
             document.getElementById(targetElm).innerHTML =
@@ -288,7 +299,6 @@ function editArticle(targetElm, artIdFromHash, offsetFromHash, totalCountFromHas
     fetchAndProcessArticle(...arguments,true);
 }
 function deleteArticle(targetElm, artIdFromHash, offsetFromHash, totalCountFromHash){
-    console.log("tu som");
     const url = `${urlBase}/article/${artIdFromHash}`;
     fetch(url)
         .then(response =>{
@@ -305,7 +315,8 @@ function deleteArticle(targetElm, artIdFromHash, offsetFromHash, totalCountFromH
                     document.getElementById("template-articles").innerHTML,
                     responseJSON
                 );
-            //fetchAndDisplayArticles(targetElm,offsetFromHash,totalCountFromHash);
+            window.location=`#articles/${offsetFromHash}/${totalCountFromHash}`;
+            fetchAndDisplayArticles(targetElm,offsetFromHash,totalCountFromHash);
         })
         .catch (error => { ////here we process all the failed promises
             const errMsgObj = {errMessage:error};
@@ -341,9 +352,6 @@ function fetchAndProcessArticle(targetElm, artIdFromHash, offsetFromHash, totalC
         })
         .then(responseJSON => {
 
-
-            // if(forEdit){
-            // }else{
             if(forEdit){
                 responseJSON.formTitle="Article Edit";
                 responseJSON.formSubmitCall =
@@ -398,11 +406,6 @@ function insertNewArticle(targetElm, artIdFromHash, offsetFromHash, totalCountFr
             }
         })
         .then(responseJSON => {
-
-
-            // if(forEdit){
-            // }else{
-
                 responseJSON.formTitle="Article Add";
                 responseJSON.formSubmitCall =
                     `processArtEditFrmData(event,${artIdFromHash},${offsetFromHash},${totalCountFromHash},'${urlBase}','POST')`;
@@ -416,7 +419,7 @@ function insertNewArticle(targetElm, artIdFromHash, offsetFromHash, totalCountFr
                         document.getElementById("template-article-form").innerHTML,
                         responseJSON
                     );
-
+            //window.location=`#articles/${offsetFromHash}/${totalCountFromHash}`;
 
         })
         .catch (error => { ////here we process all the failed promises

@@ -133,7 +133,14 @@ body > footer{
     }
 }
 
-
+.linkAsButton, button{
+    background-color: hotpink;
+    border-radius: 1em;
+    border-width: 0.1em;
+    border-color: rgb(204,153,0);
+    padding: 0.5em;
+    margin-bottom: 1em;
+}
 
 
 /***********************************************************************************************************/
