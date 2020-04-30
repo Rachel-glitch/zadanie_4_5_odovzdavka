@@ -47,6 +47,12 @@ export default[
         hash:"artDelete",
         target:"router-view",
         getTemplate: deleteArticle
+    },
+    {
+        hash:"addArticle",
+        target:"router-view",
+        getTemplate: insertNewArticle
+        //getTemplate:(targetElm) => document.getElementById(targetElm).innerHTML = document.getElementById("template-addArticle").innerHTML
     }
 
 ];
@@ -341,7 +347,7 @@ function fetchAndProcessArticle(targetElm, artIdFromHash, offsetFromHash, totalC
             if(forEdit){
                 responseJSON.formTitle="Article Edit";
                 responseJSON.formSubmitCall =
-                    `processArtEditFrmData(event,${artIdFromHash},${offsetFromHash},${totalCountFromHash},'${urlBase}')`;
+                    `processArtEditFrmData(event,${artIdFromHash},${offsetFromHash},${totalCountFromHash},'${urlBase}','PUT')`;
                 responseJSON.submitBtTitle="Save article";
                 responseJSON.urlBase=urlBase;
 
@@ -374,6 +380,53 @@ function fetchAndProcessArticle(targetElm, artIdFromHash, offsetFromHash, totalC
                 );
         });
 
+}
+
+function insertNewArticle(targetElm, artIdFromHash, offsetFromHash, totalCountFromHash) {
+    const url = `${urlBase}/article`;
+    //const url = `${urlBase}/article/${artIdFromHash}`;
+
+    console.log(offsetFromHash  + "takyto offset prisiel v routes");
+    console.log(totalCountFromHash + "takyto total prisiel v routes");
+
+    fetch(url)
+        .then(response =>{
+            if(response.ok){
+                return response.json();
+            }else{ //if we get server error
+                return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`));
+            }
+        })
+        .then(responseJSON => {
+
+
+            // if(forEdit){
+            // }else{
+
+                responseJSON.formTitle="Article Add";
+                responseJSON.formSubmitCall =
+                    `processArtEditFrmData(event,${artIdFromHash},${offsetFromHash},${totalCountFromHash},'${urlBase}','POST')`;
+                responseJSON.submitBtTitle="Save article";
+                responseJSON.urlBase=urlBase;
+
+                responseJSON.backLink=`#article/${offsetFromHash}/${totalCountFromHash}`;
+
+                document.getElementById(targetElm).innerHTML =
+                    Mustache.render(
+                        document.getElementById("template-article-form").innerHTML,
+                        responseJSON
+                    );
+
+
+        })
+        .catch (error => { ////here we process all the failed promises
+            const errMsgObj = {errMessage:error};
+            document.getElementById(targetElm).innerHTML =
+                Mustache.render(
+                    document.getElementById("template-articles-error").innerHTML,
+                    errMsgObj
+                );
+        });
 }
 
 

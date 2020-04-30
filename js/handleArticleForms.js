@@ -139,9 +139,10 @@ function uploadImg(serverUrl) {
  * @param serverUrl - basic part of the server url, without the service specification, i.e.  https://wt.kpi.fei.tuke.sk/api.
 
  */
-function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl){
+function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl, met) {
     event.preventDefault();
-
+    console.log(offset + "takyto offset prisiel");
+    console.log(totalCount + "takyto total prisiel");
 
     //1. Gather and check the form data
 
@@ -150,8 +151,8 @@ function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl){
         content: document.getElementById("content").value.trim(),
         author: document.getElementById("author").value.trim(),
 
-        imageLink:document.getElementById("imageLink").value.trim(),
-        tags:document.getElementById("tags").value.trim()
+        imageLink: document.getElementById("imageLink").value.trim(),
+        tags: document.getElementById("tags").value.trim()
     };
 
     if (!(articleData.title && articleData.content)) {
@@ -169,66 +170,71 @@ function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl){
 
     if (!articleData.tags) {
         delete articleData.tags;
-    }else{
-        articleData.tags=articleData.tags.split(","); //zmeni retazec s tagmi na pole. Oddelovac poloziek je ciarka.
-        //changes the string with tags to array. Comma is the separator
-        articleData.tags=articleData.tags.map(tag => tag.trim()); //odstráni prázdne znaky na začiatku a konci každého kľúčového slova
-        //deletes white spaces from the beginning and the end of each tag string
-
-        //newArtData.tags=newArtData.tags.map(function(tag) {return tag.trim()}); //alternativny sposob zapisu predch. prikazu
-        //an alternative way of writing the previous command
-
-        articleData.tags=articleData.tags.filter(tag => tag); //odstráni tie tagy, ktoré sú teraz len prázdne reťazce
-                                                            //removes those tags that are now just empty strings
-        if(articleData.tags.length==0){
+    } else {
+        articleData.tags = articleData.tags.split(","); //zmeni retazec s tagmi na pole. Oddelovac poloziek je ciarka.
+        articleData.tags = articleData.tags.map(tag => tag.trim()); //odstráni prázdne znaky na začiatku a konci každého kľúčového slova
+        articleData.tags = articleData.tags.filter(tag => tag); //odstráni tie tagy, ktoré sú teraz len prázdne reťazce
+        //removes those tags that are now just empty strings
+        if (articleData.tags.length == 0) {
             delete articleData.tags;
         }
     }
-
     //2. Set up the request
 
-
-    const postReqSettings = //an object wih settings of the request
-        {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-            },
-            body: JSON.stringify(articleData)
-        };
+    const postReqSettings =
+            {
+                //method: 'PUT',
+                method: met,
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                },
+                body: JSON.stringify(articleData)
+            };
 
 
     //3. Execute the request
+    if(met == 'PUT') {
+        fetch(`${serverUrl}/article/${articleId}`, postReqSettings)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`));
+                }
+            })
+            .then(responseJSON => {
+                window.alert("Updated article successfully saved on server");
+            })
+            .catch(error => {
+                window.alert(`Failed to save the updated article on server. ${error}`);
 
+            })
+            .finally(() => window.location.hash = `#article/${articleId}/${offset}/${totalCount}`);
+    }else if(met == 'POST'){
 
-    fetch(`${serverUrl}/article/${articleId}`, postReqSettings)  //now we need the second parameter, an object wih settings of the request.
-        .then(response => {      //fetch promise fullfilled (operation completed successfully)
-            if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
-                return response.json(); //we return a new promise with the response data in JSON to be processed
-            } else { //if we get server error
-                return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
-            }
-        })
-        .then(responseJSON => { //here we process the returned response data in JSON ...
-            window.alert("Updated article successfully saved on server");
-        })
-        .catch(error => { ////here we process all the failed promises
-            window.alert(`Failed to save the updated article on server. ${error}`);
+        fetch(`${serverUrl}/article`, postReqSettings)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`));
+                }
+            })
+            .then(responseJSON => {
+                window.alert("New article successfully saved on server");
+            })
+            .catch(error => {
+                window.alert(`Failed to save the new article on server. ${error}`);
 
-        })
-        .finally(() => window.location.hash=`#article/${articleId}/${offset}/${totalCount}`);
+            })
+            .finally(() => window.location.hash = `#article/${offset}/${totalCount}`);
+    }
 
 }
 
 
 function deleteData(event, articleId, offset, totalCount, serverUrl) {
     //event.preventDefault();
-    //const outpElm = document.getElementById(outputEmlId);
-
-    //1. Get id from the form
-
-
-    //const id2Delete =  document.getElementById("articleId").value.trim();
     const id2Delete = articleId;
     //2. Set up the request
     const deleteReqSettings = //an object wih settings of the request
@@ -238,10 +244,6 @@ function deleteData(event, articleId, offset, totalCount, serverUrl) {
 
 
     //3. Execute the request
-
-    //outpElm.innerHTML=`Attempting to delete article with id=${id2Delete}<br />... <br /> <br />`;
-
-
     fetch(`${serverUrl}/article/${id2Delete}`, deleteReqSettings)  //now we need the second parameter, an object wih settings of the request.
         .then(response => {      //fetch promise fullfilled (operation completed successfully)
             if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
