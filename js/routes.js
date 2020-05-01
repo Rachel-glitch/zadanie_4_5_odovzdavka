@@ -83,17 +83,6 @@ function createHtml4opinions(targetElm){
 
 
 function str(targetElm, current,totalCount, artcs){
-    // let array=[];
-    // let text = artcs[0].content;
-    // console.log(text);
-    // artcs.forEach((article,index) => {
-    //     artcs[index].content = article.content;
-    //     text = {content: text};
-    //     console.log(article.content);
-    // })
-
-        //console.log(article);
-
     current=parseInt(current);
     totalCount=parseInt(totalCount);
     const data4rendering={
@@ -118,7 +107,8 @@ function str(targetElm, current,totalCount, artcs){
 
 function fetchAndDisplayArticles(targetElm, offsetFromHash, totalCountFromHash){
 
-    const offset=Number(offsetFromHash)-1;
+   // const offset=Number(offsetFromHash)-1;
+    const offset=Number(offsetFromHash);
     const totalCount=Number(totalCountFromHash);
     let urlQuery = "";
     let array=[];
@@ -390,7 +380,10 @@ function fetchAndProcessArticle(targetElm, artIdFromHash, offsetFromHash, totalC
                 responseJSON.editLink=`#artEdit/${responseJSON.id}/${offsetFromHash}/${totalCountFromHash}`;
                 responseJSON.deleteLink=`#artDelete/${responseJSON.id}/${offsetFromHash}/${totalCountFromHash}`;
                     //funkcia na vybratie konkretneho komentara a vypis clanku aj komentara - argumenty..id a responseJson
-                comment(targetElm, artIdFromHash, responseJSON);
+                console.log(offsetFromHash + "offset vo fetch");
+                console.log(totalCountFromHash + "total vo fetch");
+                console.log(artIdFromHash + "id vo fetch");
+                comment(targetElm, artIdFromHash, responseJSON, offsetFromHash, totalCountFromHash);
                 // document.getElementById(targetElm).innerHTML =
                 //     Mustache.render(
                 //         document.getElementById("template-article").innerHTML,
@@ -447,8 +440,8 @@ function insertNewArticle(targetElm, artIdFromHash, offsetFromHash, totalCountFr
         });
 }
 
-function comment(targetElm, artIdFromHash, resp){
-    let urlQuery = "";
+function comment(targetElm, artIdFromHash, resp, offsetFromHash, totalCountFromHash ){
+    let urlQuery = `?offset=${offsetFromHash}&max=${articlesPerPage}`;
     let array=[];
 
     const newUrl= urlBase+"/article"
@@ -468,7 +461,8 @@ function comment(targetElm, artIdFromHash, resp){
         })
         .then(() =>{
             let artRequests = array.map(
-                article => fetch(`${newUrl}/${article.id}/${urlQuery}`)
+                //article => fetch(`${newUrl}/${article.id}/${urlQuery}`)
+                article => fetch(`${newUrl}/${article.id}`)
             );
             return Promise.all(artRequests);
         })
@@ -520,12 +514,20 @@ function comment(targetElm, artIdFromHash, resp){
             for(i=0; i<array.length; i++) {
                 if (array[i].comments !=null) {
                     if (array[i].id == artIdFromHash) {
-                        printArticleAndComments(targetElm, resp, array[i].comments);
+                        printArticleAndComments(targetElm, resp, array[i].comments, offsetFromHash, totalCountFromHash);
                     }
                 }else{
                     const data={
                         arti:resp,
+                        backLink:resp.backLink,
+                        editLink:resp.editLink,
+                        deleteLink:resp.deleteLink,
                     }
+                    console.log(offsetFromHash);
+                    console.log(totalCountFromHash);
+                    resp.backLink=`#articles/${offsetFromHash}/${totalCountFromHash}`;
+                    resp.editLink=`#artEdit/${artIdFromHash}/${offsetFromHash}/${totalCountFromHash}`;
+                    resp.deleteLink=`#artDelete/${artIdFromHash}/${offsetFromHash}/${totalCountFromHash}`;
                     document.getElementById(targetElm).innerHTML =
                         Mustache.render(
                             document.getElementById("template-article").innerHTML,
@@ -546,13 +548,25 @@ function comment(targetElm, artIdFromHash, resp){
         });
 }
 
-function printArticleAndComments(targetElm,resp, comm){
+function printArticleAndComments(targetElm,resp, comm, offsetFromHash, totalCountFromHash){
+    console.log(offsetFromHash);
+    console.log(totalCountFromHash);
+    console.log(resp.id);
     console.log("----------------------");
     console.log(comm);
+
     const data={
         comments:comm,
         arti:resp,
+        backLink:resp.backLink,
+        editLink:resp.editLink,
+        deleteLink:resp.deleteLink,
+
     }
+    resp.backLink=`#articles/${offsetFromHash}/${totalCountFromHash}`;
+    resp.editLink=`#artEdit/${resp.id}/${offsetFromHash}/${totalCountFromHash}`;
+    resp.deleteLink=`#artDelete/${resp.id}/${offsetFromHash}/${totalCountFromHash}`;
+
 
     document.getElementById(targetElm).innerHTML = Mustache.render(
         document.getElementById("template-article").innerHTML,

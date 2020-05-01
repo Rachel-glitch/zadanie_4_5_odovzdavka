@@ -220,7 +220,7 @@
 </script>
 
 <script id="template-article" type="text/template">
-    {{#arti}}
+{{#arti}}}
     <article>
         <h3>{{title}}</h3>
         <p>
@@ -237,7 +237,7 @@
             {{tags}}
         </p>
     </article>
-    {{/arti}}
+{{/arti}}
 
     <article>
         Komentare:
@@ -245,8 +245,8 @@
             {{#comments}}
             <li>
 
-                    {{{text}}}
-                    {{author}}
+                    {{{text}}}<br>
+                <i>{{author}}</i>
 
             </li>
             {{/comments}}
