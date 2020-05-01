@@ -516,11 +516,14 @@ function comment(targetElm, artIdFromHash, resp){
         })
         .then( ()=> {
 
+            let texty=[];
             let i;
             let com;
             for(i=0; i<array.length; i++) {
-                if (array[i].comments.length > 0) {
+                if (array[i].comments !=null) {
                     if (array[i].id == artIdFromHash) {
+                        console.log(array[i].comments.length);
+                        console.log("dostal som sa tu");
                         array[i].comments.forEach((comment, index) => {
                             array[i].comments[index].text = comment.text;
                             console.log(comment.text);
@@ -538,7 +541,10 @@ function comment(targetElm, artIdFromHash, resp){
                             data);
                 }
             }
+
+
         })
+
         .catch (error => { ////here we process all the failed promises
             const errMsgObj = {errMessage:error};
             document.getElementById(targetElm).innerHTML =
@@ -550,10 +556,13 @@ function comment(targetElm, artIdFromHash, resp){
 }
 
 function printArticleAndComments(targetElm,resp, comm){
+    console.log("----------------------");
+    console.log(comm);
     const data={
         comments:comm,
         arti:resp,
     }
+
     document.getElementById(targetElm).innerHTML = Mustache.render(
         document.getElementById("template-article").innerHTML,
        data

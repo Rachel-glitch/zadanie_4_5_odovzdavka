@@ -238,11 +238,17 @@
         </p>
     </article>
     {{/arti}}
+
     <article>
         Komentare:
         <ul>
             {{#comments}}
-            <li>{{{text}}}</li>
+            <li>
+
+                    {{{text}}}
+                    {{author}}
+
+            </li>
             {{/comments}}
         </ul>
     </article>
