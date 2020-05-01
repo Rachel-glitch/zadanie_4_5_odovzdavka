@@ -227,7 +227,7 @@ function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl, me
                 window.alert(`Failed to save the new article on server. ${error}`);
 
             })
-            .finally(() => window.location.hash = `#article/${offset}/${totalCount}`);
+            .finally(() => window.location.hash = `#articles/${offset}/${totalCount}`);
     }
 
 }

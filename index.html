@@ -22,7 +22,8 @@
 
     <nav id="menuIts" class="menu mnHide">
             <a href="#welcome">Vitajte!</a>
-            <a href="#articles/0/150">Články</a>
+            <a href="#articles/1/150">Články</a>
+
         <a href="#addArticle">Pridaj svoj clanok</a>
 <!--            <a href="#click/1/10">Main Content</a>-->
             <a href="#opinions">Prehľad názorov</a>
@@ -71,6 +72,7 @@
         </div>
         <p>
             by {{author}}
+            com {{{text}}}
         </p>
     </article>
     {{/articles}}
@@ -218,6 +220,7 @@
 </script>
 
 <script id="template-article" type="text/template">
+    {{#arti}}
     <article>
         <h3>{{title}}</h3>
         <p>
@@ -234,11 +237,21 @@
             {{tags}}
         </p>
     </article>
+    {{/arti}}
+    <article>
+        Komentare:
+        <ul>
+            {{#comments}}
+            <li>{{{text}}}</li>
+            {{/comments}}
+        </ul>
+    </article>
 
     <footer>
         <a href="{{backLink}}" class="linkAsButton"><< Back</a>
         <a href="{{editLink}}" class="linkAsButton">Edit</a>
         <a href="{{deleteLink}}" class="linkAsButton">Delete</a>
+        <a href="{{addCommentLink}}" class="linkAsButton">Add Comment</a>
         <a href="#menuTitle" class="linkAsButton">Up to the menu</a>
     </footer>
 
