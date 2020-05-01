@@ -516,19 +516,10 @@ function comment(targetElm, artIdFromHash, resp){
         })
         .then( ()=> {
 
-            let texty=[];
             let i;
-            let com;
             for(i=0; i<array.length; i++) {
                 if (array[i].comments !=null) {
                     if (array[i].id == artIdFromHash) {
-                        console.log(array[i].comments.length);
-                        console.log("dostal som sa tu");
-                        array[i].comments.forEach((comment, index) => {
-                            array[i].comments[index].text = comment.text;
-                            console.log(comment.text);
-                            com = {text: com};
-                        })
                         printArticleAndComments(targetElm, resp, array[i].comments);
                     }
                 }else{
