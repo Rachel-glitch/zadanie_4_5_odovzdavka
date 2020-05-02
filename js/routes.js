@@ -29,6 +29,8 @@ export default[
         target:"router-view",
         getTemplate: (targetElm) =>
             document.getElementById(targetElm).innerHTML = document.getElementById("template-addOpinion").innerHTML
+        // getTemplate: (targetElm) =>
+        //     document.getElementById(targetElm).innerHTML = document.getElementById("template-addComment").innerHTML
     },
 
     {
@@ -52,7 +54,13 @@ export default[
         target:"router-view",
         getTemplate: insertNewArticle
         //getTemplate:(targetElm) => document.getElementById(targetElm).innerHTML = document.getElementById("template-addArticle").innerHTML
-    }
+    },
+    {
+        hash:"addComment",
+        target:"router-view",
+        getTemplate: addComment
+    },
+
 
 ];
 
@@ -106,8 +114,7 @@ function str(targetElm, current,totalCount, artcs){
 }
 
 function fetchAndDisplayArticles(targetElm, offsetFromHash, totalCountFromHash){
-
-   // const offset=Number(offsetFromHash)-1;
+    // const offset=Number(offsetFromHash)-1;
     const offset=Number(offsetFromHash);
     const totalCount=Number(totalCountFromHash);
     let urlQuery = "";
@@ -120,7 +127,6 @@ function fetchAndDisplayArticles(targetElm, offsetFromHash, totalCountFromHash){
     }else{
         urlQuery=`?max=${articlesPerPage}`;
     }
-
     const newUrl= urlBase+"/article"
     //const url = `${urlBase}/article${urlQuery}`;
 
@@ -379,6 +385,8 @@ function fetchAndProcessArticle(targetElm, artIdFromHash, offsetFromHash, totalC
                 responseJSON.backLink=`#articles/${offsetFromHash}/${totalCountFromHash}`;
                 responseJSON.editLink=`#artEdit/${responseJSON.id}/${offsetFromHash}/${totalCountFromHash}`;
                 responseJSON.deleteLink=`#artDelete/${responseJSON.id}/${offsetFromHash}/${totalCountFromHash}`;
+                //responseJSON.addCommentLink=`#addComment/${responseJSON.id}/${offsetFromHash}/${totalCountFromHash}`;
+                responseJSON.addCommentLink=`#addComment/${responseJSON.id}/${offsetFromHash}/${totalCountFromHash}`;
                     //funkcia na vybratie konkretneho komentara a vypis clanku aj komentara - argumenty..id a responseJson
                 console.log(offsetFromHash + "offset vo fetch");
                 console.log(totalCountFromHash + "total vo fetch");
@@ -466,24 +474,6 @@ function comment(targetElm, artIdFromHash, resp, offsetFromHash, totalCountFromH
             );
             return Promise.all(artRequests);
         })
-        .then(responses => {
-            let failed = "";
-            for (let response of responses) {
-                if (!response.ok) failed += response.url + " "
-            }
-            if (failed === ""){
-                return responses;
-            }else {
-                return  Promise.reject(new Error(`Failed to access the content of the articles with urls ${failed}.`));
-            }
-        })
-        .then(responses => Promise.all(responses.map(resp => resp.json())))
-        .then(articles => {
-            articles.forEach((article,index) =>{
-                array[index].content=article.content;
-            });
-            return Promise.resolve();
-        })
         .then( () => {
             let commRequests = array.map(
                 article => fetch(`${newUrl}/${article.id}/comment`)
@@ -522,22 +512,20 @@ function comment(targetElm, artIdFromHash, resp, offsetFromHash, totalCountFromH
                         backLink:resp.backLink,
                         editLink:resp.editLink,
                         deleteLink:resp.deleteLink,
+                        addCommentLink: resp.addCommentLink,
                     }
                     console.log(offsetFromHash);
                     console.log(totalCountFromHash);
-                    resp.backLink=`#articles/${offsetFromHash}/${totalCountFromHash}`;
-                    resp.editLink=`#artEdit/${artIdFromHash}/${offsetFromHash}/${totalCountFromHash}`;
-                    resp.deleteLink=`#artDelete/${artIdFromHash}/${offsetFromHash}/${totalCountFromHash}`;
+                    // resp.backLink=`#articles/${offsetFromHash}/${totalCountFromHash}`;
+                    // resp.editLink=`#artEdit/${artIdFromHash}/${offsetFromHash}/${totalCountFromHash}`;
+                    // resp.deleteLink=`#artDelete/${artIdFromHash}/${offsetFromHash}/${totalCountFromHash}`;
                     document.getElementById(targetElm).innerHTML =
                         Mustache.render(
                             document.getElementById("template-article").innerHTML,
                             data);
                 }
             }
-
-
         })
-
         .catch (error => { ////here we process all the failed promises
             const errMsgObj = {errMessage:error};
             document.getElementById(targetElm).innerHTML =
@@ -561,17 +549,68 @@ function printArticleAndComments(targetElm,resp, comm, offsetFromHash, totalCoun
         backLink:resp.backLink,
         editLink:resp.editLink,
         deleteLink:resp.deleteLink,
+        addCommentLink: resp.addCommentLink,
 
     }
-    resp.backLink=`#articles/${offsetFromHash}/${totalCountFromHash}`;
-    resp.editLink=`#artEdit/${resp.id}/${offsetFromHash}/${totalCountFromHash}`;
-    resp.deleteLink=`#artDelete/${resp.id}/${offsetFromHash}/${totalCountFromHash}`;
+    // resp.backLink=`#articles/${offsetFromHash}/${totalCountFromHash}`;
+    // resp.editLink=`#artEdit/${resp.id}/${offsetFromHash}/${totalCountFromHash}`;
+    // resp.deleteLink=`#artDelete/${resp.id}/${offsetFromHash}/${totalCountFromHash}`;
 
 
     document.getElementById(targetElm).innerHTML = Mustache.render(
         document.getElementById("template-article").innerHTML,
        data
     );
+}
+
+function addComment(targetElm, artIdFromHash, offsetFromHash, totalCountFromHash){
+    const url = `${urlBase}/article/${artIdFromHash}`;
+    //const url = "https://wt.kpi.fei.tuke.sk/api/article";
+    //const url = urlBase +"/article"+"/"+artIdFromHash+"/comment";
+    fetch(url)
+        .then(response =>{
+            if(response.ok){
+                return response.json();
+            }else{ //if we get server error
+                return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`));
+            }
+        })
+        .then(responseJSON => {
+            responseJSON.formTitle = "Add Comment";
+            responseJSON.formSubmitCall =
+                // `processArtEditFrmData(event,${artIdFromHash},${offsetFromHash},${totalCountFromHash},'${urlBase}','PUT')`;
+                `processCommentData(event,${artIdFromHash},${offsetFromHash},${totalCountFromHash},'${urlBase}')`;
+            responseJSON.submitBtTitle = "Save comment";
+            responseJSON.urlBase = urlBase;
+            responseJSON.backLink = `#article/${artIdFromHash}/${offsetFromHash}/${totalCountFromHash}`;
+
+            const data={
+                arti:responseJSON,
+                backLink:responseJSON.backLink,
+                editLink:responseJSON.editLink,
+                deleteLink:responseJSON.deleteLink,
+                addCommentLink: responseJSON.addCommentLink,
+                formSubmitCall:responseJSON.formSubmitCall,
+                submitBtTitle:responseJSON.submitBtTitle,
+
+            }
+
+            document.getElementById(targetElm).innerHTML =
+                Mustache.render(
+                    document.getElementById("template-addComment").innerHTML,
+                    data
+                    //responseJSON
+                );
+        })
+
+        .catch (error => { ////here we process all the failed promises
+            const errMsgObj = {errMessage:error};
+            document.getElementById(targetElm).innerHTML =
+                Mustache.render(
+                    document.getElementById("template-articles-error").innerHTML,
+                    errMsgObj
+                );
+        });
 }
 
 

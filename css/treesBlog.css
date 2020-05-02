@@ -66,6 +66,7 @@ main footer{
 }
 
 main > article{
+    margin-top: 1.5rem;
     padding: 1.5rem;
     margin-bottom: 1rem;
     line-height: 200%;

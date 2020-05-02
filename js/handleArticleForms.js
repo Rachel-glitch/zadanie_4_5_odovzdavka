@@ -139,6 +139,50 @@ function uploadImg(serverUrl) {
  * @param serverUrl - basic part of the server url, without the service specification, i.e.  https://wt.kpi.fei.tuke.sk/api.
 
  */
+
+function processCommentData(event, articleId, offset, totalCount, url){
+
+    event.preventDefault();
+    const data = {
+
+        author: document.getElementById("authorComment").value.trim(),
+        text: document.getElementById("text").value.trim(),
+    };
+    console.log(data.authorComment);
+    console.log(offset + "offset");
+    console.log(totalCount + "total");
+
+    // if(!(data.text && data.author)){
+    //     window.alert("Please, enter text and author");
+    //     return;
+    // }
+    const postReqSettings =
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+            },
+            body: JSON.stringify(data)
+        };
+    fetch(`${url}/article/${articleId}/comment`, postReqSettings)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`));
+            }
+        })
+        .then(responseJSON => {
+            window.alert("New comment successfully saved on server");
+        })
+        .catch(error => {
+            window.alert(`Failed to save the new comment on server. ${error}`);
+
+        })
+        .finally(() => window.location.hash = `#article/${articleId}/${offset}/${totalCount}`);
+
+
+}
 function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl, met) {
     event.preventDefault();
     console.log(offset + "takyto offset prisiel");

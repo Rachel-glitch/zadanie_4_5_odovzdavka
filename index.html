@@ -79,10 +79,10 @@
     <footer>
         <a href="#menuTitle" class="linkAsButton">Up to the menu</a>
         {{#prevPage}}
-        <a href="#articles/{{prevPage}}/{{pageCount}}"><< Previous page</a>
+        <a href="#articles/{{prevPage}}/{{pageCount}}" class="linkAsButton"><< Previous page</a>
         {{/prevPage}}
         {{#nextPage}}
-        <a href="#articles/{{nextPage}}/{{pageCount}}">Next page >></a>
+        <a href="#articles/{{nextPage}}/{{pageCount}}" class="linkAsButton">Next page >></a>
         {{/nextPage}}
     </footer>
 
@@ -239,28 +239,72 @@
     </article>
 {{/arti}}
 
-    <article>
-        Komentare:
-        <ul>
-            {{#comments}}
-            <li>
-                    <div>
-                    {{{text}}}<br>
-                <i>by {{author}}</i>
-                    </div>
-
-            </li>
-            {{/comments}}
-        </ul>
-    </article>
-
-    <footer>
+<footer>
         <a href="{{backLink}}" class="linkAsButton"><< Back</a>
         <a href="{{editLink}}" class="linkAsButton">Edit</a>
         <a href="{{deleteLink}}" class="linkAsButton">Delete</a>
-        <a href="{{addCommentLink}}" class="linkAsButton">Add Comment</a>
         <a href="#menuTitle" class="linkAsButton">Up to the menu</a>
-    </footer>
+</footer>
+<article>
+    Komentare:
+    <ul>
+        {{#comments}}
+        <li>
+            <div>
+                {{{text}}}<br>
+                <i>by {{author}}</i>
+            </div>
+
+        </li>
+
+        {{/comments}}
+    </ul>
+    <a href="{{addCommentLink}}" class="linkAsButton">Add Comment</a>
+</article>
+</script>
+
+<script id="template-addComment" type="text/template">
+
+{{#arti}}
+<article>
+        <h3>{{title}}</h3>
+        <p>
+            by {{author}}
+        </p>
+        {{#imageLink}}
+        <figure>
+            <img src="{{imageLink}}" alt="article figure" />
+        </figure>
+        {{/imageLink}}
+        <div>{{{content}}}</div>
+        <p>
+            Keywords:
+            {{tags}}
+        </p>
+</article>
+
+{{/arti}}
+    <article>
+        <form id="commentForm" onsubmit="return {{formSubmitCall}}">
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="authorComment" value="{{author}}" size="50" title="Article author, max. length 100 characters." maxlength="100" placeholder="e.g. Ján Trieska" />
+            <br>
+            <label for="text">Article content:</label>
+            <textarea
+                    name="text" id="text" spellcheck="true" lang="sk"
+                    cols="50" rows="20" required
+                    title="vas nazor">{{text}}</textarea>
+            <br>
+            <br>
+            <button type="reset">
+                Reset Form
+            </button>
+            <button type="submit">
+                {{submitBtTitle}}
+            </button>
+
+        </form>
+    </article>
 
 </script>
 
