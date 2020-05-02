@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="author" content="Stefan Korecko" />
+    <meta name="google-signin-client_id" content="1029678842004-cgp7r7hb11lbl8qm0t5cg7576944sea5.apps.googleusercontent.com">
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet"
           href="css/treesBlog.css"
@@ -22,7 +23,7 @@
 
     <nav id="menuIts" class="menu mnHide">
             <a href="#welcome">Vitajte!</a>
-            <a href="#articles/1/150">Články</a>
+            <a href="#articles/0/200">Články</a>
 
         <a href="#addArticle">Pridaj svoj clanok</a>
 <!--            <a href="#click/1/10">Main Content</a>-->
@@ -33,6 +34,13 @@
 </div>
 
 </header>
+<aside id="googleSignIn">
+    <div id="SignInButton"></div>
+    <div id="SignedIn">
+        Ste prihlásený ako (You are signed in as) <span id="userName"></span> <button onclick="signOut()">Odhlásiť sa / Sign Out</button>
+    </div>
+</aside>
+<div id="userStatus"></div>
 
 <main id="router-view">
 </main>
@@ -376,6 +384,8 @@
 <script src="js/handleArticleForms.js"></script>
 
 <script type="module" src="js/routerInit.js"></script>
+<script src="js/82GoogleAccessBetter.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=startGSingIn" async defer></script>
 
 </body>
 </html>

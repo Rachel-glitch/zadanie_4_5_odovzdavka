@@ -67,6 +67,7 @@ export default[
 const urlBase = "https://wt.kpi.fei.tuke.sk/api";
 const articlesPerPage = 10;
 
+
 function createHtml4opinions(targetElm){
 
     const opinionsFromStorage=localStorage.myFlowers;
@@ -99,7 +100,8 @@ function str(targetElm, current,totalCount, artcs){
         articles: artcs,
     };
 
-    if(current>1){
+    if(current>
+        1){
         data4rendering.prevPage=current-articlesPerPage;
     }
 

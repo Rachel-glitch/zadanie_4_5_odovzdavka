@@ -300,7 +300,7 @@ function deleteData(event, articleId, offset, totalCount, serverUrl) {
         })
         .catch(error => { ////here we process all the failed promises
             window.alert(`Failed to delete article of server. ${error}`);
-        });
+        }) .finally(() => window.location.hash = `#articles/${offset}/${totalCount}`);
 
 }
 
