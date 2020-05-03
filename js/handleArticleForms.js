@@ -148,9 +148,6 @@ function processCommentData(event, articleId, offset, totalCount, url){
         author: document.getElementById("authorComment").value.trim(),
         text: document.getElementById("text").value.trim(),
     };
-    console.log(data.authorComment);
-    console.log(offset + "offset");
-    console.log(totalCount + "total");
 
     // if(!(data.text && data.author)){
     //     window.alert("Please, enter text and author");
@@ -185,8 +182,6 @@ function processCommentData(event, articleId, offset, totalCount, url){
 }
 function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl, met) {
     event.preventDefault();
-    console.log(offset + "takyto offset prisiel");
-    console.log(totalCount + "takyto total prisiel");
 
     //1. Gather and check the form data
 
@@ -278,7 +273,6 @@ function processArtEditFrmData(event,articleId,offset, totalCount, serverUrl, me
 
 
 function deleteData(event, articleId, offset, totalCount, serverUrl) {
-    //event.preventDefault();
     const id2Delete = articleId;
     //2. Set up the request
     const deleteReqSettings = //an object wih settings of the request
