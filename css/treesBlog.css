@@ -54,7 +54,10 @@ body > header{
     border-width: 5px;
     border-color: darkred;
     outline-offset: 20em;
+
+
 }
+
 
 
 body > footer{
@@ -110,6 +113,30 @@ img{
     height: auto;
 }
 
+/*header>h1{*/
+/*    grid-column-start: 1;*/
+/*    grid-row-start: 1;*/
+
+/*    -ms-grid-column: 1;*/
+/*    -ms-grid-row: 1;*/
+/*}*/
+
+/*header>button{*/
+
+/*    grid-column-start: 1;*/
+/*    grid-row-start: 3;*/
+
+/*    -ms-grid-column: 1;*/
+/*    -ms-grid-row: 3;*/
+/*}*/
+
+/*header>aside{*/
+/*    grid-column-start: 2;*/
+/*    grid-row-start: 3;*/
+/*    -ms-grid-column: 2;*/
+/*    -ms-grid-row: 3;*/
+/*}*/
+
 /***********************************************************************************************************/
 /*FLEXBOX LAYOUT and media queries for the whole page*/
 body{
@@ -157,6 +184,29 @@ body > footer{
 .menu {
     text-align: left;
     padding-left: 0.5em;
+    display: grid;
+
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr auto;
+
+    display: -ms-grid;
+    -ms-grid-columns: 1fr auto ;
+    -ms-grid-rows: 1fr auto ;
+}
+
+.menu > aside{
+    grid-column-start: 2;
+    grid-row-start: 3;
+    -ms-grid-column: 2;
+    -ms-grid-row: 3;
+}
+
+.menu > p{
+    grid-column-start: 1;
+    grid-row-start: 3;
+
+    -ms-grid-column: 1;
+    -ms-grid-row: 3;
 }
 
 #menuIts{

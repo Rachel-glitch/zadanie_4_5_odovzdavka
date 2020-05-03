@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="author" content="Stefan Korecko" />
-    <meta name="google-signin-client_id" content="1029678842004-cgp7r7hb11lbl8qm0t5cg7576944sea5.apps.googleusercontent.com">
+<!--    <meta name="google-signin-client_id" content="1029678842004-cgp7r7hb11lbl8qm0t5cg7576944sea5.apps.googleusercontent.com">-->
+    <meta name="google-signin-client_id" content="816060266035-gotub1rkffu0ivq3lr5phcdtand3hquv.apps.googleusercontent.com">
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet"
           href="css/treesBlog.css"
@@ -19,7 +20,10 @@
 
 
 <div class="menu">
+    <p>
     <button id="menuTitle" onclick="displayOrHideMenu()">Menu</button>
+    </p>
+
 
     <nav id="menuIts" class="menu mnHide">
             <a href="#welcome">Vitajte!</a>
@@ -30,17 +34,19 @@
             <a href="#opinions">Prehľad názorov</a>
             <a href="#addOpinion">Pridaj svoj názor</a>
     </nav>
+    <aside id="googleSignIn">
+        <div id="SignInButton"></div>
+        <div id="SignedIn">
+            Ste prihlásený ako (You are signed in as) <span id="userName"></span><br>
+            <button onclick="signOut()">Odhlásiť sa / Sign Out</button>
+        </div>
+    </aside>
+
 
 </div>
 
 </header>
-<aside id="googleSignIn">
-    <div id="SignInButton"></div>
-    <div id="SignedIn">
-        Ste prihlásený ako (You are signed in as) <span id="userName"></span> <button onclick="signOut()">Odhlásiť sa / Sign Out</button>
-    </div>
-</aside>
-<div id="userStatus"></div>
+
 
 <main id="router-view">
 </main>
