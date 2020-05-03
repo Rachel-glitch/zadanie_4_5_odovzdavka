@@ -29,8 +29,6 @@ export default[
         target:"router-view",
         getTemplate: (targetElm) =>
             document.getElementById(targetElm).innerHTML = document.getElementById("template-addOpinion").innerHTML
-        // getTemplate: (targetElm) =>
-        //     document.getElementById(targetElm).innerHTML = document.getElementById("template-addComment").innerHTML
     },
 
     {

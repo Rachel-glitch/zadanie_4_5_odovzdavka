@@ -18,6 +18,10 @@ html {
     margin: 1rem;
 }
 
+.hiddenElm{
+    visibility: hidden;
+}
+
 body{
     background-image: url("../fig/pozadie3.jpeg");
     background-repeat: repeat;
@@ -208,6 +212,8 @@ body > footer{
     -ms-grid-column: 1;
     -ms-grid-row: 3;
 }
+
+
 
 #menuIts{
     position:absolute;
